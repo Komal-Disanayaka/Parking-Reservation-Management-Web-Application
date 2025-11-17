@@ -55,31 +55,11 @@ cd Parking-Reservation-Management-Web-Application
    spring.datasource.password=your_password
    ```
 
-### 3. Build and Run the Application
-
-#### Using Maven:
-```bash
-# Build the project
-mvn clean compile
-
-# Run the application
-mvn spring-boot:run
-```
-
-#### Using Maven Wrapper (if available):
-```bash
-# On Windows
-./mvnw.cmd spring-boot:run
-
-# On Unix/Linux/Mac
-./mvnw spring-boot:run
-```
-
 #### Using IDE:
 - Open the project in your preferred IDE (IntelliJ IDEA, Eclipse, VS Code)
 - Run the `ParkingReservationApplication.java` class
 
-### 4. Access the Application
+### 3. Access the Application
 Once the application is running, open your web browser and navigate to:
 ```
 http://localhost:8080
@@ -103,43 +83,6 @@ http://localhost:8080
 ### ADMIN
 - All LOT_MANAGER permissions
 - Full system administration capabilities
-
-## 🏗️ Project Structure
-
-```
-src/
-├── main/
-│   ├── java/com/parking/
-│   │   ├── ParkingReservationApplication.java  # Main application class
-│   │   ├── config/
-│   │   │   ├── DataInitializer.java            # Initial data setup
-│   │   │   └── SecurityConfig.java             # Security configuration
-│   │   ├── controller/
-│   │   │   ├── AuthController.java             # Authentication endpoints
-│   │   │   ├── LotManagerController.java       # Lot management endpoints
-│   │   │   └── ProfileController.java          # Profile management endpoints
-│   │   ├── model/
-│   │   │   ├── ParkingLot.java                # Parking lot entity
-│   │   │   └── User.java                      # User entity
-│   │   ├── repository/
-│   │   │   ├── ParkingLotRepository.java      # Parking lot data access
-│   │   │   └── UserRepository.java            # User data access
-│   │   └── service/
-│   │       ├── CustomUserDetailsService.java  # Custom user details
-│   │       ├── DataInitializationService.java # Data initialization
-│   │       ├── ParkingLotService.java         # Parking lot business logic
-│   │       └── UserService.java               # User business logic
-│   └── resources/
-│       ├── application.properties              # Application configuration
-│       ├── static/css/style.css               # Styling
-│       └── templates/                         # Thymeleaf templates
-│           ├── dashboard.html
-│           ├── index.html
-│           ├── login.html
-│           ├── register.html
-│           ├── lot-manager/                   # Lot management pages
-│           └── profile/                       # Profile management pages
-```
 
 ## 🗄️ Database Schema
 
@@ -200,95 +143,6 @@ The application uses the following main entities:
 - `POST /lot-manager/lots/{id}/edit` - Update lot
 - `POST /lot-manager/lots/{id}/delete` - Delete lot
 
-## 🧪 Testing
-
-To run tests (when available):
-```bash
-mvn test
-```
-
-## 📦 Building for Production
-
-To create a production-ready JAR file:
-```bash
-mvn clean package
-```
-
-The JAR file will be created in the `target/` directory and can be run with:
-```bash
-java -jar target/parking-reservation-0.0.1-SNAPSHOT.jar
-```
-
-## 🔧 Configuration
-
-### Database Configuration
-Update `application.properties` for different environments:
-
-```properties
-# Development
-spring.jpa.hibernate.ddl-auto=create-drop
-
-# Production
-spring.jpa.hibernate.ddl-auto=validate
-```
-
-### Server Configuration
-```properties
-# Change port
-server.port=8081
-
-# Context path
-server.servlet.context-path=/parking
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **Database Connection Error**
-   - Ensure MySQL is running
-   - Check database credentials in `application.properties`
-   - Verify database exists or enable auto-creation
-
-2. **Port Already in Use**
-   - Change the port in `application.properties`: `server.port=8081`
-   - Or kill the process using port 8080
-
-3. **Build Failures**
-   - Ensure Java 17 is installed and configured
-   - Run `mvn clean` before building
-   - Check for dependency conflicts
-
-## 🚧 Future Enhancements
-
-- Parking spot reservation functionality
-- Real-time parking availability
-- Payment integration
-- Mobile application
-- Notification system
-- Reporting and analytics
-- QR code integration
-
-## ✨ Screenshots
-
-*Add screenshots of your application here*
-
-## 📞 Support
-
-For support and questions, please open an issue in the GitHub repository or contact the development team.
-
----
-
-**Happy Parking! 🚗**
