@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Lot Details - ParkingNest</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-parking"></i> ParkingNest - Lot Manager</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/lot-manager/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/lot-manager/lots"><i class="fas fa-list"></i> All Lots</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/lot-manager/create-lot"><i class="fas fa-plus"></i> Create Lot</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/lot-manager/dashboard">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="/lot-manager/lots">Parking Lots</a></li>
+                <li class="breadcrumb-item active">Details</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="card-title mb-0">
+                            <i class="fas fa-info-circle"></i> Parking Lot Details
+                        </h4>
+                        <div class="btn-group" role="group">
+                            <a th:href="@{/lot-manager/edit-lot/{id}(id=${parkingLot.id})}" 
+                               class="btn btn-primary btn-sm">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a th:href="@{/lot-manager/delete-lot/{id}(id=${parkingLot.id})}" 
+                               class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Basic Information -->
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-info-circle text-primary"></i> Basic Information</h5>
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td><strong>Lot Name:</strong></td>
+                                        <td th:text="${parkingLot.lotName}">Lot Name</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Location:</strong></td>
+                                        <td>
+                                            <i class="fas fa-map-marker-alt text-danger"></i>
+                                            <span th:text="${parkingLot.location}">Location</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Status:</strong></td>
+                                        <td>
+                                            <span class="badge" 
+                                                  th:classappend="${parkingLot.status.name() == 'AVAILABLE'} ? 'bg-success' : (${parkingLot.status.name() == 'MAINTENANCE'} ? 'bg-warning' : 'bg-danger')"
+                                                  th:text="${parkingLot.status.name()}">Status</span>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${parkingLot.description}">
+                                        <td><strong>Description:</strong></td>
+                                        <td th:text="${parkingLot.description}">Description</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Created:</strong></td>
+                                        <td th:text="${#temporals.format(parkingLot.createdAt, 'MMM dd, yyyy HH:mm')}">Created Date</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Last Updated:</strong></td>
+                                        <td th:text="${#temporals.format(parkingLot.updatedAt, 'MMM dd, yyyy HH:mm')}">Updated Date</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <!-- Occupancy Information -->
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-car text-success"></i> Occupancy Information</h5>
+                                
+                                <!-- Statistics Cards -->
+                                <div class="row mb-3">
+                                    <div class="col-4">
+                                        <div class="card bg-primary text-white text-center">
+                                            <div class="card-body py-2">
+                                                <h6 class="card-title">Total</h6>
+                                                <h4 th:text="${parkingLot.capacity}">0</h4>
+                                                <small>slots</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="card bg-success text-white text-center">
+                                            <div class="card-body py-2">
+                                                <h6 class="card-title">Available</h6>
+                                                <h4 th:text="${parkingLot.availableSlots}">0</h4>
+                                                <small>slots</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="card bg-warning text-white text-center">
+                                            <div class="card-body py-2">
+                                                <h6 class="card-title">Occupied</h6>
+                                                <h4 th:text="${parkingLot.occupiedSlots}">0</h4>
+                                                <small>slots</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Occupancy Progress -->
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>Occupancy Rate</span>
+                                        <span><strong th:text="${#numbers.formatDecimal(parkingLot.occupancyPercentage, 1, 1)} + '%'">0%</strong></span>
+                                    </div>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar" 
+                                             th:style="'width: ' + ${parkingLot.occupancyPercentage} + '%'"
+                                             th:classappend="${parkingLot.occupancyPercentage > 80} ? 'bg-danger' : (${parkingLot.occupancyPercentage > 60} ? 'bg-warning' : 'bg-success')"
+                                             th:text="${#numbers.formatDecimal(parkingLot.occupancyPercentage, 1, 1)} + '%'">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Status indicator -->
+                                <div class="alert" 
+                                     th:classappend="${parkingLot.occupancyPercentage > 90} ? 'alert-danger' : (${parkingLot.occupancyPercentage > 75} ? 'alert-warning' : 'alert-success')">
+                                    <i class="fas" 
+                                       th:classappend="${parkingLot.occupancyPercentage > 90} ? 'fa-exclamation-triangle' : (${parkingLot.occupancyPercentage > 75} ? 'fa-exclamation-circle' : 'fa-check-circle')"></i>
+                                    <span th:if="${parkingLot.occupancyPercentage > 90}">
+                                        <strong>Nearly Full!</strong> This parking lot is almost at capacity.
+                                    </span>
+                                    <span th:if="${parkingLot.occupancyPercentage > 75 and parkingLot.occupancyPercentage <= 90}">
+                                        <strong>High Occupancy</strong> This parking lot is getting busy.
+                                    </span>
+                                    <span th:if="${parkingLot.occupancyPercentage <= 75}">
+                                        <strong>Good Availability</strong> This parking lot has plenty of space available.
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="mt-4 pt-3 border-top">
+                            <div class="d-flex justify-content-between">
+                                <a href="/lot-manager/lots" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Back to All Lots
+                                </a>
+                                <div class="btn-group" role="group">
+                                    <a th:href="@{/lot-manager/edit-lot/{id}(id=${parkingLot.id})}" 
+                                       class="btn btn-primary">
+                                        <i class="fas fa-edit"></i> Edit Lot
+                                    </a>
+                                    <a th:href="@{/lot-manager/delete-lot/{id}(id=${parkingLot.id})}" 
+                                       class="btn btn-outline-danger">
+                                        <i class="fas fa-trash"></i> Delete Lot
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lot Manager Dashboard - ParkingNest</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <style>
+        .dashboard-card {
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        .lot-status-available {
+            color: #28a745;
+        }
+        .lot-status-maintenance {
+            color: #ffc107;
+        }
+        .lot-status-closed {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-parking"></i> ParkingNest - Lot Manager</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/lot-manager/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/lot-manager/lots"><i class="fas fa-list"></i> All Lots</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/lot-manager/create-lot"><i class="fas fa-plus"></i> Create Lot</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> <span th:text="${currentUser}">User</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Alert Messages -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle"></i> <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="h3 mb-0"><i class="fas fa-tachometer-alt"></i> Lot Manager Dashboard</h1>
+                <p class="text-muted">Manage parking lots and monitor occupancy</p>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-6 mb-3">
+                <div class="card bg-primary text-white dashboard-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Total Lots</h6>
+                                <h2 th:text="${totalLots}">0</h2>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-parking fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="card bg-success text-white dashboard-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Available</h6>
+                                <h2 th:text="${availableLots}">0</h2>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-check-circle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="card bg-warning text-white dashboard-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Maintenance</h6>
+                                <h2 th:text="${maintenanceLots}">0</h2>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-tools fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="card bg-danger text-white dashboard-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Closed</h6>
+                                <h2 th:text="${closedLots}">0</h2>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-times-circle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Parking Lots -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0"><i class="fas fa-list"></i> All Parking Lots</h5>
+                        <a href="/lot-manager/create-lot" class="btn btn-success btn-sm">
+                            <i class="fas fa-plus"></i> Create New Lot
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#lists.isEmpty(parkingLots)}" class="text-center py-5">
+                            <i class="fas fa-parking fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No parking lots found</h5>
+                            <p class="text-muted">Create your first parking lot to get started.</p>
+                            <a href="/lot-manager/create-lot" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Create Parking Lot
+                            </a>
+                        </div>
+                        
+                        <div th:if="${not #lists.isEmpty(parkingLots)}" class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Lot Name</th>
+                                        <th>Location</th>
+                                        <th>Capacity</th>
+                                        <th>Availability</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="lot : ${parkingLots}">
+                                        <td>
+                                            <strong th:text="${lot.lotName}">Lot Name</strong>
+                                        </td>
+                                        <td th:text="${lot.location}">Location</td>
+                                        <td>
+                                            <span th:text="${lot.capacity}">0</span> slots
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <span th:text="${lot.availableSlots}">0</span> available
+                                                <div class="progress ms-2" style="width: 100px; height: 8px;">
+                                                    <div class="progress-bar" 
+                                                         th:style="'width: ' + ${lot.occupancyPercentage} + '%'"
+                                                         th:classappend="${lot.occupancyPercentage > 80} ? 'bg-danger' : (${lot.occupancyPercentage > 60} ? 'bg-warning' : 'bg-success')">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge" 
+                                                  th:classappend="${lot.status.name() == 'AVAILABLE'} ? 'bg-success' : (${lot.status.name() == 'MAINTENANCE'} ? 'bg-warning' : 'bg-danger')"
+                                                  th:text="${lot.status.name()}">Status</span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <a th:href="@{/lot-manager/lot-details/{id}(id=${lot.id})}" 
+                                                   class="btn btn-outline-info" title="View Details">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a th:href="@{/lot-manager/edit-lot/{id}(id=${lot.id})}" 
+                                                   class="btn btn-outline-primary" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a th:href="@{/lot-manager/delete-lot/{id}(id=${lot.id})}" 
+                                                   class="btn btn-outline-danger" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

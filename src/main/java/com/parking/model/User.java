@@ -46,7 +46,7 @@ public class User {
     private Role role = Role.USER;
     
     public enum Role {
-        USER, ADMIN
+        USER, ADMIN, LOT_MANAGER
     }
     
     // Constructors

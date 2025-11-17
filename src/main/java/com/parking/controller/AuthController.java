@@ -1,6 +1,8 @@
 package com.parking.controller;
 
+import com.parking.model.ParkingLot;
 import com.parking.model.User;
+import com.parking.service.ParkingLotService;
 import com.parking.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +12,16 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 public class AuthController {
     
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private ParkingLotService parkingLotService;
     
     @GetMapping("/")
     public String home() {
@@ -69,6 +76,12 @@ public class AuthController {
     public String dashboard(Model model) {
         User currentUser = userService.getCurrentUser();
         model.addAttribute("user", currentUser);
+        
+        // Add available parking lots for users to see
+        List<ParkingLot> availableParkingLots = parkingLotService.getAvailableParkingLots();
+        model.addAttribute("parkingLots", availableParkingLots);
+        model.addAttribute("totalAvailableLots", availableParkingLots.size());
+        
         return "dashboard";
     }
 }

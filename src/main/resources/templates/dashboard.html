@@ -305,6 +305,73 @@
             </div>
         </div>
 
+        <!-- Available Parking Lots -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h2 class="section-title">Available Parking Lots</h2>
+                <div th:if="${#lists.isEmpty(parkingLots)}" class="dashboard-card">
+                    <div class="card-body text-center p-5">
+                        <i class="fas fa-parking fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No parking lots available</h5>
+                        <p class="text-muted">Check back later for available parking spaces.</p>
+                    </div>
+                </div>
+                
+                <div th:if="${not #lists.isEmpty(parkingLots)}" class="row g-4">
+                    <div class="col-md-6 col-lg-4" th:each="lot : ${parkingLots}">
+                        <div class="dashboard-card">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h6 class="card-title mb-0" th:text="${lot.lotName}">Lot Name</h6>
+                                    <span class="badge bg-success">Available</span>
+                                </div>
+                                <p class="text-muted mb-3">
+                                    <i class="fas fa-map-marker-alt me-1" style="color: var(--primary-green);"></i>
+                                    <span th:text="${lot.location}">Location</span>
+                                </p>
+                                <p class="text-muted mb-3" th:if="${lot.description}" th:text="${lot.description}">Description</p>
+                                
+                                <div class="row text-center mb-3">
+                                    <div class="col-6">
+                                        <div class="text-success">
+                                            <i class="fas fa-car"></i>
+                                            <span th:text="${lot.availableSlots}">0</span>
+                                        </div>
+                                        <small class="text-muted">Available</small>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-primary">
+                                            <i class="fas fa-parking"></i>
+                                            <span th:text="${lot.capacity}">0</span>
+                                        </div>
+                                        <small class="text-muted">Total</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="progress mb-3" style="height: 8px;">
+                                    <div class="progress-bar" 
+                                         th:style="'width: ' + ${lot.occupancyPercentage} + '%; background-color: ' + (${lot.occupancyPercentage > 80} ? '#dc3545' : (${lot.occupancyPercentage > 60} ? '#ffc107' : 'var(--primary-green)'))"
+                                         th:attr="aria-valuenow=${lot.occupancyPercentage}, aria-valuemin=0, aria-valuemax=100">
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <span th:text="${#numbers.formatDecimal(lot.occupancyPercentage, 1, 1)}">0</span>% occupied
+                                    </small>
+                                    <button class="btn btn-sm" 
+                                            style="background: var(--primary-green); color: white; border-radius: 8px;" 
+                                            disabled>
+                                        <i class="fas fa-plus me-1"></i>Reserve
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Account Info -->
         <div class="row">
             <div class="col-md-6">
